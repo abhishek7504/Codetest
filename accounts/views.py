@@ -1,10 +1,11 @@
 from .models import User, GlobalConacts
-from .serializers import UserSerializer,GlobalConactsSerializer
+from .serializers import UserSerializer,GlobalConactsSerializer,UserLoginSerializer, AuthUserSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
+from django.contrib.auth import authenticate, login
 
 
 class UserList(APIView):
@@ -50,3 +51,21 @@ class Search(APIView):
       serializer = GlobalConactsSerializer(result,many=True)
       return Response(serializer.data)
     return Response({"message":"Add some get query"})
+
+
+
+class Login(APIView):
+  
+  def post(self, request):
+    serializer = UserLoginSerializer(data=request.data)
+    if serializer.is_valid():
+      phone_number = serializer.validated_data.get('phone_number')
+      password = serializer.validated_data.get('password')
+      user = authenticate(username = phone_number,password=password)
+      print(user)
+      if user is not None:
+        login(request,user)
+        return Response(serializer.data,status = status.HTTP_200_OK)
+      else:
+        return Response({"message":"User Not Found"},status=status.HTTP_404_NOT_FOUND)
+

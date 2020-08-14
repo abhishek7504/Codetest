@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'rest_framework',
+    'rest_framework.authtoken',
     'import_export',
 ]
 AUTH_USER_MODEL = 'accounts.User'
@@ -74,6 +75,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+               'rest_framework.authentication.TokenAuthentication',
+    ),
+    # 'DEFAULT_PERMISSION_CLASSES':(
+    #             'rest_framework.permissions.IsAuthenticated',
+    # ),
+
+}
 
 
 # Database
